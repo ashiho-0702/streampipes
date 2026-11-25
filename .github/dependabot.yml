@@ -42,7 +42,9 @@ updates:
         update-types: [ "version-update:semver-major" ]
       - dependency-name: "org.springdoc:*"
         update-types: [ "version-update:semver-major" ]
-    open-pull-requests-limit: 5
+    # The Maven backlog is large (~50 pending updates per run); a low limit lets
+    # long-lived PRs crowd out important ones such as Spring Boot
+    open-pull-requests-limit: 15
     cooldown:
       default-days: 7
       semver-major-days: 14
@@ -64,8 +66,6 @@ updates:
       - dependency-name: "@angular/*"
         update-types: [ "version-update:semver-major" ]
       - dependency-name: "@angular-eslint/*"
-        update-types: [ "version-update:semver-major" ]
-      - dependency-name: "@ngbracket/ngx-layout"
         update-types: [ "version-update:semver-major" ]
       - dependency-name: "ng-packagr"
         update-types: [ "version-update:semver-major" ]
@@ -92,8 +92,6 @@ updates:
       - dependency-name: "@angular/*"
         update-types: [ "version-update:semver-major" ]
       - dependency-name: "@angular-eslint/*"
-        update-types: [ "version-update:semver-major" ]
-      - dependency-name: "@ngbracket/ngx-layout"
         update-types: [ "version-update:semver-major" ]
       - dependency-name: "ng-packagr"
         update-types: [ "version-update:semver-major" ]

@@ -48,4 +48,3 @@ function Get-ManagedStatus([string]$Name) {
     if ($code -ne 0 -and $code -ne 3) { throw "Cannot read $Name status (exit $code)." }
     return @{ Running = ($code -eq 0); Text = "$output" }
 }
-

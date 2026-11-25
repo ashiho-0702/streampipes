@@ -30,13 +30,9 @@ import {
 } from '@streampipes/platform-services';
 import { PipelineElementTemplateGenerator } from './pipeline-element-template-generator';
 import {
-    FlexDirective,
-    LayoutAlignDirective,
-    LayoutDirective,
-} from '@ngbracket/ngx-layout/flex';
-import {
     FormFieldComponent,
     SplitSectionComponent,
+    SpAlertBannerComponent,
 } from '@streampipes/shared-ui';
 import { MatFormField, MatHint } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -53,16 +49,14 @@ import { PipelineElementTemplatePipe } from './pipeline-element-template.pipe';
     styleUrls: ['./pipeline-element-template-config.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
-        FlexDirective,
-        LayoutDirective,
         SplitSectionComponent,
+        SpAlertBannerComponent,
         FormFieldComponent,
         MatFormField,
         MatInput,
         FormsModule,
         MatHint,
         PipelineElementTemplateConfigItemComponent,
-        LayoutAlignDirective,
         MatIconButton,
         MatIcon,
         TranslatePipe,

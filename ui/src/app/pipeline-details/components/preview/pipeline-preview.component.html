@@ -16,12 +16,12 @@
 ~
 -->
 
-<div class="outer-assembly-preview" fxFlex="100">
-    <div class="outerAssembly" fxFlex="100">
+<div class="outer-assembly-preview flex-100 flex-row">
+    <div class="outerAssembly flex-100 flex-row">
         @if (rawPipelineModel) {
             <sp-pipeline-assembly-drawing-area
                 #pipelineDrawingAreaComponent
-                fxFlex="100"
+                class="flex-100"
                 style="position: relative"
                 [jsplumbBridge]="jsPlumbBridge"
                 [metricsInfo]="metricsInfo"
@@ -33,8 +33,11 @@
                     ) !== undefined
                 "
                 [readonly]="true"
-            ></sp-pipeline-assembly-drawing-area>
+                (previewStateChange)="previewStateChange.emit($event)"
+            >
+                <!-- overlays the canvas only, so it stays clear of the live preview panel -->
+                <ng-content></ng-content>
+            </sp-pipeline-assembly-drawing-area>
         }
     </div>
-    <ng-content></ng-content>
 </div>

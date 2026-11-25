@@ -28,12 +28,8 @@ import {
     PipelineElementConfig,
     PipelineElementUnion,
 } from '../../../model/editor.model';
-import {
-    PipelinePreviewModel,
-    SpMetricsEntry,
-} from '@streampipes/platform-services';
+import { SpMetricsEntry } from '@streampipes/platform-services';
 import { NgClass } from '@angular/common';
-import { ClassDirective } from '@ngbracket/ngx-layout/extended';
 import {
     PipelineElementComponent,
     SpSpinnerComponent,
@@ -41,7 +37,7 @@ import {
 import { MatTooltip } from '@angular/material/tooltip';
 import { PipelineElementStatisticsComponent } from '../../pipeline-element-statistics/pipeline-element-statistics.component';
 import { PipelineElementOptionsComponent } from '../../pipeline-element-options/pipeline-element-options.component';
-import { PipelineElementPreviewComponent } from '../../pipeline-element-preview/pipeline-element-preview.component';
+import { LivePreviewBadgeComponent } from '../../live-preview-panel/live-preview-badge/live-preview-badge.component';
 
 @Component({
     selector: 'sp-dropped-pipeline-element',
@@ -49,13 +45,12 @@ import { PipelineElementPreviewComponent } from '../../pipeline-element-preview/
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         NgClass,
-        ClassDirective,
         SpSpinnerComponent,
         PipelineElementComponent,
         MatTooltip,
         PipelineElementStatisticsComponent,
         PipelineElementOptionsComponent,
-        PipelineElementPreviewComponent,
+        LivePreviewBadgeComponent,
     ],
 })
 export class DroppedPipelineElementComponent implements OnInit {
@@ -70,12 +65,6 @@ export class DroppedPipelineElementComponent implements OnInit {
 
     @Input()
     metricsInfo: Record<string, SpMetricsEntry>;
-
-    @Input()
-    previewModeActive: boolean;
-
-    @Input()
-    pipelinePreview: PipelinePreviewModel;
 
     @Input()
     rawPipelineModel: PipelineElementConfig[];

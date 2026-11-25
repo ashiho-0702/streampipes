@@ -105,15 +105,15 @@
             [pipelineCanvasMetadata]="pipelineCanvasMetadata"
             [allElements]="allElements"
             [jsplumbBridge]="jsplumbBridge"
-            [previewModeActive]="previewModeActive"
+            [previewState]="previewState"
             (clearAssemblyEmitter)="clearAssembly()"
             (togglePreviewEmitter)="togglePreview()"
             (displayPipelineTemplateEmitter)="displayPipelineTemplate($event)"
         >
             <ng-content select="[editorSearch]"></ng-content>
         </sp-pipeline-assembly-options>
-        <div class="pipeline-assembly__workspace" fxLayout="row">
-            <div class="pipeline-assembly__palette" fxLayout="column">
+        <div class="pipeline-assembly__workspace flex-row">
+            <div class="pipeline-assembly__palette flex-col">
                 <ng-content select="[editorPalette]"></ng-content>
             </div>
             <div
@@ -124,8 +124,7 @@
                 @if (rawPipelineModel) {
                     <sp-pipeline-assembly-drawing-area
                         #drawingAreaComponent
-                        fxFlex="100"
-                        class="pipeline-assembly__drawing"
+                        class="pipeline-assembly__drawing flex-100"
                         (triggerPipelineCacheUpdateEmitter)="
                             triggerCacheUpdate()
                         "
@@ -137,6 +136,7 @@
                             pipelineCanvasMetadataAvailable
                         "
                         [jsplumbBridge]="jsplumbBridge"
+                        (previewStateChange)="previewState = $event"
                     >
                     </sp-pipeline-assembly-drawing-area>
                 }

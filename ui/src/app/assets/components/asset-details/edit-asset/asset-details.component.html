@@ -24,6 +24,7 @@
         [selectedAsset]="selectedAsset"
         (selectedAssetEmitter)="applySelectedAsset($event)"
         (moveAssetRequested)="moveSubAsset($event)"
+        (assetRemoved)="handleAssetRemoved($event)"
     >
         <sp-basic-view [hideNavbar]="true" [padding]="true">
             <sp-page-header
@@ -92,9 +93,11 @@
                 </button>
             </mat-menu>
             @if (asset) {
-                <div fxLayout="column">
+                <div class="flex-col">
                     <sp-asset-details-basics
                         (reloadSites)="reloadSites()"
+                        [pendingImage]="pendingImages.get(selectedAsset)"
+                        (imageChanged)="handleImageChanged($event)"
                         [asset]="selectedAsset"
                         [assetModel]="asset"
                         [sites]="sites"

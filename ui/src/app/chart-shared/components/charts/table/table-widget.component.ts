@@ -42,7 +42,6 @@ import {
     DataExplorerField,
     SpQueryResult,
 } from '@streampipes/platform-services';
-import { FlexDirective, LayoutDirective } from '@ngbracket/ngx-layout/flex';
 import { NoDataInDateRangeComponent } from '../base/no-data/no-data-in-date-range.component';
 import { TooMuchDataComponent } from '../base/too-much-data/too-much-data.component';
 import { TranslatePipe } from '@ngx-translate/core';
@@ -104,12 +103,11 @@ const TIMESTAMP_MASK = 'yyyy-mm-dd HH:mm:ss.SSS';
 
 @Component({
     selector: 'sp-data-explorer-table-widget',
+    host: { class: 'flex-row' },
     templateUrl: './table-widget.component.html',
     styleUrls: ['./table-widget.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
-        LayoutDirective,
-        FlexDirective,
         NgStyle,
         NgClass,
         CdkDropList,
@@ -972,11 +970,15 @@ export class TableWidgetComponent extends BaseDataExplorerWidgetDirective<TableW
         );
     }
 
-    /** Timestamp cells carry as much detail as the visible time window needs. */
+    /**
+     * Each row is a single raw data point, so timestamp cells always show the
+     * full date and time down to milliseconds, independent of the time range.
+     */
     formatTimestamp(value: unknown): string {
         return this.timeFormatService.formatTimestamp(
             this.asTimestamp(value),
-            this.visibleTimeSpan,
+            undefined,
+            'full',
         );
     }
 
@@ -997,14 +999,6 @@ export class TableWidgetComponent extends BaseDataExplorerWidgetDirective<TableW
             fullDbName: timestampRuntimeName,
             sourceIndex: 0,
         });
-    }
-
-    private get visibleTimeSpan(): number | undefined {
-        const settings = this.timeSettings;
-        return settings?.startTime !== undefined &&
-            settings?.endTime !== undefined
-            ? settings.endTime - settings.startTime
-            : undefined;
     }
 
     private applyTableState(resetPageIndex: boolean): void {

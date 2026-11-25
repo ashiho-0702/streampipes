@@ -17,6 +17,7 @@
  */
 
 import { DatePipe } from '@angular/common';
+import { CdkCopyToClipboard } from '@angular/cdk/clipboard';
 import {
     AfterViewInit,
     Component,
@@ -59,6 +60,7 @@ import {
     SpSpinnerComponent,
     SpTableActionsDirective,
     SpTableAssetContextConfig,
+    SpTableCardDirective,
     SpTableComponent,
     SpTableMultiActionExecuteEvent,
     SpTableMultiActionOption,
@@ -71,21 +73,14 @@ import { DataRetentionLogDialogComponent } from '../../dialog/data-retention-log
 import { UserPrivilege } from '../../../core/auth/user-privilege.enum';
 import { UserRole } from '../../../core/auth/user-role.enum';
 import { CsvImportDialogComponent } from '../../dialog/csv-import-dialog/csv-import-dialog.component';
-import {
-    FlexDirective,
-    FlexOrderDirective,
-    LayoutAlignDirective,
-    LayoutDirective,
-    LayoutGapDirective,
-} from '@ngbracket/ngx-layout/flex';
 import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatIcon } from '@angular/material/icon';
-import { AsyncPipe, NgStyle } from '@angular/common';
-import { StyleDirective } from '@ngbracket/ngx-layout/extended';
+import { AsyncPipe, NgStyle, NgTemplateOutlet } from '@angular/common';
 import { MatMenuItem } from '@angular/material/menu';
 import { catchError, of, Subscription } from 'rxjs';
 import { DatasetLastEventLabelComponent } from './dataset-last-event-label/dataset-last-event-label.component';
+import { DatasetOverviewCardComponent } from './dataset-overview-card/dataset-overview-card.component';
 
 @Component({
     selector: 'sp-dataset-overview',
@@ -94,13 +89,10 @@ import { DatasetLastEventLabelComponent } from './dataset-last-event-label/datas
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
         DatePipe,
-        LayoutDirective,
-        LayoutAlignDirective,
-        FlexDirective,
+        CdkCopyToClipboard,
         MatIconButton,
         MatTooltip,
         MatIcon,
-        LayoutGapDirective,
         MatSort,
         MatColumnDef,
         MatHeaderCellDef,
@@ -109,9 +101,7 @@ import { DatasetLastEventLabelComponent } from './dataset-last-event-label/datas
         MatCellDef,
         MatCell,
         SpSpinnerComponent,
-        FlexOrderDirective,
         NgStyle,
-        StyleDirective,
         MatMenuItem,
         MatButton,
         TranslatePipe,
@@ -119,8 +109,11 @@ import { DatasetLastEventLabelComponent } from './dataset-last-event-label/datas
         SpBasicViewComponent,
         SpPageHeaderComponent,
         SpTableActionsDirective,
+        SpTableCardDirective,
         DatasetLastEventLabelComponent,
+        DatasetOverviewCardComponent,
         AsyncPipe,
+        NgTemplateOutlet,
     ],
 })
 export class DatasetOverviewComponent
@@ -150,7 +143,14 @@ export class DatasetOverviewComponent
         resourceIdKey: 'elementId',
     };
 
+    readonly downloadDatasetActionOption: SpTableMultiActionOption = {
+        value: 'download',
+        label: this.translateService.instant('Download selected'),
+        icon: 'download',
+    };
+
     readonly bulkDatasetActionOptions: SpTableMultiActionOption[] = [
+        this.downloadDatasetActionOption,
         {
             value: 'truncate',
             label: this.translateService.instant('Truncate selected'),
@@ -163,9 +163,19 @@ export class DatasetOverviewComponent
         },
     ];
 
+    readonly readOnlyDatasetActionOptions: SpTableMultiActionOption[] = [
+        this.downloadDatasetActionOption,
+    ];
+
     executeSelectedDatasetAction(
         event: SpTableMultiActionExecuteEvent<DatasetOverviewEntry>,
     ): void {
+        if (event.action === 'download' && event.selectedRows.length) {
+            this.openMultiDownloadDialog(
+                event.selectedRows.map(dataset => dataset.name),
+            );
+            return;
+        }
         if (
             !this.writeAccess ||
             !event.selectedRows.length ||
@@ -219,6 +229,7 @@ export class DatasetOverviewComponent
     isAdmin = false;
     writeAccess = false;
     assetFilter$: Subscription;
+    private tableSubscriptions = new Subscription();
     currentTime = Date.now();
     currentFilterIds: Set<string> = new Set<string>();
 
@@ -257,15 +268,22 @@ export class DatasetOverviewComponent
         this.paginator = this.spTable.paginator;
         this.dataSource.sort = this.sort;
 
-        this.spTable.paginator.page.subscribe(event => {
-            this.pageIndex = event.pageIndex;
-            this.pageSize = event.pageSize;
-            this.receiveLastEventTimes(this.pageIndex);
-        });
+        this.tableSubscriptions.add(
+            this.spTable.paginator.page.subscribe(event => {
+                this.pageIndex = event.pageIndex;
+                this.pageSize = event.pageSize;
+            }),
+        );
+        this.tableSubscriptions.add(
+            this.dataSource.connect().subscribe(datasets => {
+                this.receiveLastEventTimes(datasets);
+            }),
+        );
     }
 
     ngOnDestroy(): void {
         this.assetFilter$?.unsubscribe();
+        this.tableSubscriptions.unsubscribe();
     }
 
     loadAvailableDatasets(): void {
@@ -298,7 +316,6 @@ export class DatasetOverviewComponent
 
         this.dataSource.data = this.filteredDatasets;
         this.updatePaginatorAfterFiltering();
-        this.receiveLastEventTimes(this.pageIndex);
 
         setTimeout(() => {
             this.dataSource.paginator = this.paginator;
@@ -372,6 +389,19 @@ export class DatasetOverviewComponent
         });
     }
 
+    openMultiDownloadDialog(datasetNames: string[]): void {
+        this.dialogService.open(DataDownloadDialogComponent, {
+            panelType: PanelType.SLIDE_IN_PANEL,
+            title: this.translateService.instant('Download data'),
+            width: '50vw',
+            data: {
+                dataDownloadDialogModel: {
+                    measureNames: datasetNames,
+                },
+            },
+        });
+    }
+
     openDatasetDetails(elementId: string): void {
         this.router.navigate(['datasets', elementId]);
     }
@@ -412,14 +442,12 @@ export class DatasetOverviewComponent
         this.pageSize = event.pageSize;
     }
 
-    receiveLastEventTimes(pageIndex: number): void {
-        const start = pageIndex * this.pageSize;
-        const end = start + this.pageSize;
-        const datasets = this.filteredDatasets
-            .slice(start, end)
-            .filter(dataset => dataset.lastEvent === null);
-        if (datasets.length > 0) {
-            this.queryLastEventTimes(datasets);
+    receiveLastEventTimes(datasets: DatasetOverviewEntry[]): void {
+        const unloadedDatasets = datasets.filter(
+            dataset => dataset.lastEvent === null && !dataset.lastEventLoading,
+        );
+        if (unloadedDatasets.length > 0) {
+            this.queryLastEventTimes(unloadedDatasets);
         }
     }
     showPermissionsDialog(element: DatasetOverviewEntry): void {

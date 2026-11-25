@@ -23,16 +23,13 @@ import {
     Output,
     ChangeDetectionStrategy,
 } from '@angular/core';
-import {
-    LayoutAlignDirective,
-    LayoutDirective,
-} from '@ngbracket/ngx-layout/flex';
 import { MatButtonModule } from '@angular/material/button';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatSlideToggle } from '@angular/material/slide-toggle';
 import { FormsModule } from '@angular/forms';
 import { TranslatePipe } from '@ngx-translate/core';
 import { MatIcon } from '@angular/material/icon';
+import { LivePreviewState } from '../../../editor/model/editor.model';
 
 @Component({
     selector: 'sp-pipeline-details-toolbar',
@@ -40,8 +37,6 @@ import { MatIcon } from '@angular/material/icon';
     styleUrls: ['./pipeline-details-toolbar.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
-        LayoutDirective,
-        LayoutAlignDirective,
         MatButtonModule,
         MatTooltip,
         MatSlideToggle,
@@ -61,7 +56,7 @@ export class PipelineDetailsToolbarComponent {
     autoRefresh: boolean;
 
     @Input()
-    previewModeActive: boolean;
+    previewState: LivePreviewState = 'off';
 
     @Output()
     autoRefreshChange = new EventEmitter<boolean>();

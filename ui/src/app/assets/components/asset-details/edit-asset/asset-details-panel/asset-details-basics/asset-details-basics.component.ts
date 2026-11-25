@@ -26,6 +26,7 @@ import {
     SimpleChanges,
     inject,
     ChangeDetectionStrategy,
+    ViewChild,
 } from '@angular/core';
 import {
     AssetSiteDesc,
@@ -34,7 +35,6 @@ import {
     SpAsset,
     SpAssetModel,
 } from '@streampipes/platform-services';
-import { FlexDirective, LayoutDirective } from '@ngbracket/ngx-layout/flex';
 import {
     FormFieldComponent,
     SplitSectionComponent,
@@ -47,6 +47,10 @@ import { AssetDetailsLabelsComponent } from './asset-details-labels/asset-detail
 import { AssetDetailsCustomFieldsComponent } from './asset-details-custom-fields/asset-details-custom-fields.component';
 import { AssetDetailsSiteComponent } from './asset-details-site/asset-details-site.component';
 import { AssetDetailsLinksComponent } from '../asset-details-links/asset-details-links.component';
+import {
+    AssetImageComponent,
+    AssetImageChange,
+} from './asset-details-images/asset-image.component';
 import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
@@ -54,19 +58,18 @@ import { TranslatePipe } from '@ngx-translate/core';
     templateUrl: './asset-details-basics.component.html',
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
-        LayoutDirective,
         SplitSectionComponent,
         FormFieldComponent,
         MatFormField,
         MatInput,
         FormsModule,
-        FlexDirective,
         MatSelect,
         MatOption,
         AssetDetailsLabelsComponent,
         AssetDetailsCustomFieldsComponent,
         AssetDetailsSiteComponent,
         AssetDetailsLinksComponent,
+        AssetImageComponent,
         TranslatePipe,
     ],
 })
@@ -93,6 +96,15 @@ export class AssetDetailsBasicsComponent implements OnInit, OnChanges {
 
     @Output()
     reloadSites: EventEmitter<void> = new EventEmitter();
+
+    @ViewChild(AssetDetailsLinksComponent)
+    assetDetailsLinks: AssetDetailsLinksComponent;
+
+    @Input()
+    pendingImage: File | null | undefined;
+
+    @Output()
+    imageChanged = new EventEmitter<AssetImageChange>();
 
     isa95Types: Isa95TypeDesc[] = [];
 

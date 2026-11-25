@@ -37,4 +37,3 @@ classpath="$runtime_dir/classes:$(cat "$runtime_dir/classpath")"
 java -cp "$classpath" "$main_class" &
 child=$!
 wait "$child"
-

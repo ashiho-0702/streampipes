@@ -48,11 +48,11 @@
             <mat-icon aria-hidden="true">refresh</mat-icon>
         </button>
     </sp-page-header>
-    <div fxFlex="100" fxLayout="column">
-        <div fxFlex="100" fxLayout="row" fxLayoutAlign="center start">
-            <div fxFlex="100" fxLayout="column">
+    <div class="flex-col flex-100">
+        <div class="flex-row justify-center items-start flex-100">
+            <div class="flex-col flex-100">
                 <sp-table
-                    fxFlex="100"
+                    class="flex-100"
                     [columns]="displayedColumns"
                     [dataSource]="dataSource"
                     [nameSearchConfig]="{
@@ -74,11 +74,8 @@
                             *matCellDef="let asset"
                             data-cy="assets-table"
                         >
-                            <div fxLayout="row" fxLayoutAlign="start center">
-                                <div
-                                    fxLayoutAlign="center start"
-                                    fxLayout="column"
-                                >
+                            <div class="asset-name-cell">
+                                <div class="asset-name-content">
                                     <div>
                                         <b data-cy="asset-name-cell">{{
                                             asset.assetName
@@ -104,6 +101,7 @@
                     <ng-template spTableActions let-element>
                         <button
                             mat-menu-item
+                            [attr.data-cy]="'show-asset-' + element.assetName"
                             (click)="goToDetailsView(element)"
                         >
                             <mat-icon>visibility</mat-icon>

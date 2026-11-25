@@ -33,20 +33,21 @@ import {
     SpMetricsEntry,
 } from '@streampipes/platform-services';
 import {
+    LivePreviewState,
     PipelineElementConfig,
     PipelineElementUnion,
 } from '../../../editor/model/editor.model';
 import { JsplumbService } from '../../../editor/services/jsplumb.service';
 import { JsplumbBridge } from '../../../editor/services/jsplumb-bridge.service';
 import { PipelineAssemblyDrawingAreaComponent } from '../../../editor/components/pipeline-assembly/pipeline-assembly-drawing-area/pipeline-assembly-drawing-area.component';
-import { FlexDirective } from '@ngbracket/ngx-layout/flex';
 
 @Component({
     selector: 'sp-pipeline-preview',
+    host: { class: 'flex-row' },
     templateUrl: './pipeline-preview.component.html',
     styleUrls: ['./pipeline-preview.component.scss'],
     changeDetection: ChangeDetectionStrategy.Eager,
-    imports: [FlexDirective, PipelineAssemblyDrawingAreaComponent],
+    imports: [PipelineAssemblyDrawingAreaComponent],
 })
 export class PipelinePreviewComponent implements OnInit, AfterViewInit {
     private jsplumbService = inject(JsplumbService);
@@ -65,6 +66,10 @@ export class PipelinePreviewComponent implements OnInit, AfterViewInit {
     @Output()
     selectedElementEmitter: EventEmitter<PipelineElementUnion> =
         new EventEmitter<PipelineElementUnion>();
+
+    @Output()
+    previewStateChange: EventEmitter<LivePreviewState> =
+        new EventEmitter<LivePreviewState>();
 
     @ViewChild('pipelineDrawingAreaComponent')
     pipelineDrawingAreaComponent: PipelineAssemblyDrawingAreaComponent;

@@ -106,6 +106,23 @@ export default defineConfig([
             ],
 
             '@angular-eslint/prefer-standalone': 'off',
+
+            // ngx-layout was replaced by the flex utility classes; keep it out.
+            'no-restricted-imports': [
+                'error',
+                {
+                    patterns: [
+                        {
+                            group: [
+                                '@ngbracket/ngx-layout',
+                                '@ngbracket/ngx-layout/*',
+                            ],
+                            message:
+                                'Use the flex utility classes in src/scss/sp/flex.scss instead (see DESIGN.md "Layout").',
+                        },
+                    ],
+                },
+            ],
         },
     },
     {

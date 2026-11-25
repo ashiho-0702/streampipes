@@ -91,4 +91,3 @@ while sleep 3; do
     bash "$script_dir/manage-services.sh" status "$service" >/dev/null || exit 1
   done
 done
-

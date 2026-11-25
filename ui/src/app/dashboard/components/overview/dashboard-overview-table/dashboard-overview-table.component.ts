@@ -48,6 +48,7 @@ import {
     SpAssetBrowserService,
     SpTableActionsDirective,
     SpTableAssetContextConfig,
+    SpTableCardDirective,
     SpTableComponent,
 } from '@streampipes/shared-ui';
 import { MatDialog } from '@angular/material/dialog';
@@ -56,26 +57,21 @@ import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { ChartRoutingService } from '../../../../chart-shared/services/chart-routing.service';
 import { MatSort, MatSortHeader } from '@angular/material/sort';
-import {
-    FlexDirective,
-    LayoutAlignDirective,
-    LayoutDirective,
-    LayoutGapDirective,
-} from '@ngbracket/ngx-layout/flex';
 import { MatMenuItem } from '@angular/material/menu';
 import { MatIcon } from '@angular/material/icon';
+import { AsyncPipe, NgTemplateOutlet } from '@angular/common';
+import { DashboardOverviewCardComponent } from '../dashboard-overview-card/dashboard-overview-card.component';
 
 @Component({
     selector: 'sp-dashboard-overview-table',
+    host: { class: 'flex-row' },
     templateUrl: './dashboard-overview-table.component.html',
     styleUrls: [
+        '../dashboard-overview.component.scss',
         '../../../../chart/components/chart-overview/chart-overview.component.scss',
     ],
     changeDetection: ChangeDetectionStrategy.Eager,
     imports: [
-        FlexDirective,
-        LayoutDirective,
-        LayoutAlignDirective,
         SpTableComponent,
         MatSort,
         MatColumnDef,
@@ -84,10 +80,13 @@ import { MatIcon } from '@angular/material/icon';
         MatSortHeader,
         MatCellDef,
         MatCell,
-        LayoutGapDirective,
         SpTableActionsDirective,
         MatMenuItem,
         MatIcon,
+        SpTableCardDirective,
+        DashboardOverviewCardComponent,
+        NgTemplateOutlet,
+        AsyncPipe,
         TranslatePipe,
     ],
 })
@@ -122,6 +121,9 @@ export class DashboardOverviewTableComponent implements OnInit, OnDestroy {
     private assetFilterService = inject(SpAssetBrowserService);
     private routingService = inject(ChartRoutingService);
     private dialogService = inject(DialogService);
+
+    readonly dashboardLinkType$ =
+        this.assetFilterService.getAssetLinkType$('dashboard');
 
     assetFilter$: Subscription;
     currentFilterIds = new Set<string>();

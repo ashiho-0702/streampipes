@@ -129,6 +129,22 @@ export class DatasetUtils {
         }
     }
 
+    public static expectCsvImportUnknownColumns(columnNames: string) {
+        DatasetBtns.csvImportUnknownColumns().should('be.visible');
+        DatasetBtns.csvImportUnknownColumnNames().should(
+            'contain.text',
+            columnNames,
+        );
+    }
+
+    public static expectNoCsvImportUnknownColumns() {
+        DatasetBtns.csvImportUnknownColumns().should('not.exist');
+    }
+
+    public static ignoreCsvImportUnknownColumns() {
+        DatasetBtns.csvImportIgnoreUnknownColumnsBtn().click();
+    }
+
     public static openDatasetPreview(datasetName: string) {
         DatasetBtns.datasetRow(datasetName)
             .find('mat-icon')
@@ -320,5 +336,17 @@ export class DatasetUtils {
         cy.dataCy(`dataset-preview-key-${key.toLowerCase()}`, {
             timeout: 10000,
         }).should('not.exist');
+    }
+
+    public static openDownloadDialogForSelectedDatasets(
+        datasetNames: string[],
+    ) {
+        this.goToDatasets();
+        datasetNames.forEach(name => {
+            DatasetBtns.datasetRowCheckbox(name).click();
+        });
+        DatasetBtns.multiActionSelect().click();
+        DatasetBtns.multiActionOptionDownload().click();
+        DatasetBtns.multiActionExecute().should('not.be.disabled').click();
     }
 }

@@ -240,4 +240,3 @@ case "$action" in
     ;;
   *) echo "Unknown action: $action" >&2; exit 2 ;;
 esac
-

@@ -35,7 +35,10 @@ import {
     SpLogEntry,
     SpMetricsEntry,
 } from '@streampipes/platform-services';
-import { PipelineElementUnion } from '../editor/model/editor.model';
+import {
+    LivePreviewState,
+    PipelineElementUnion,
+} from '../editor/model/editor.model';
 import {
     CurrentUserService,
     DialogService,
@@ -57,7 +60,6 @@ import { PipelinePreviewComponent } from './components/preview/pipeline-preview.
 import { HttpContext } from '@angular/common/http';
 import { NGX_LOADING_BAR_IGNORED } from '@ngx-loading-bar/http-client';
 import { PipelineCodeDialogComponent } from './dialogs/pipeline-code/pipeline-code-dialog.component';
-import { LayoutDirective } from '@ngbracket/ngx-layout/flex';
 import { PipelineDetailsToolbarComponent } from './components/pipeline-details-toolbar/pipeline-details-toolbar.component';
 import { PipelineDetailsExpansionPanelComponent } from './components/pipeline-details-expansion-panel/pipeline-details-expansion-panel.component';
 import { MatButtonModule } from '@angular/material/button';
@@ -83,7 +85,6 @@ import { MeasurementUpdateAction } from '../pipelines/model/pipeline-model';
         MatIcon,
         MatMenuModule,
         PipelineDetailsToolbarComponent,
-        LayoutDirective,
         PipelinePreviewComponent,
         PipelineDetailsExpansionPanelComponent,
         TranslatePipe,
@@ -114,7 +115,7 @@ export class SpPipelineDetailsComponent implements OnInit, OnDestroy {
     autoRefresh = false;
     metricsInfo: Record<string, SpMetricsEntry> = {};
     logInfo: Record<string, SpLogEntry[]> = {};
-    previewModeActive = false;
+    previewState: LivePreviewState = 'off';
     pipelineNotFound = false;
 
     currentUser$: Subscription;
@@ -272,7 +273,6 @@ export class SpPipelineDetailsComponent implements OnInit, OnDestroy {
     }
 
     toggleLivePreview(): void {
-        this.previewModeActive = !this.previewModeActive;
         this.pipelinePreviewComponent?.toggleLivePreview();
     }
 

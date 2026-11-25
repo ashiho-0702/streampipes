@@ -16,7 +16,7 @@
 ~
 -->
 <sp-split-section [level]="3" [title]="'Fields' | translate">
-    <div section-actions fxLayoutAlign="start center" fxFlex="100">
+    <div section-actions class="flex-row items-center flex-100">
         <button
             mat-button
             mat-flat-button
@@ -35,7 +35,7 @@
         >
             {{ 'Deselect all' | translate }}
         </button>
-        <span fxFlex></span>
+        <span class="flex-1"></span>
         @if (!expandFields) {
             <button
                 mat-icon-button
@@ -57,19 +57,46 @@
             </button>
         }
     </div>
+    <mat-form-field
+        appearance="outline"
+        subscriptSizing="dynamic"
+        class="w-100 mb-sm"
+    >
+        <mat-icon matPrefix>search</mat-icon>
+        <input
+            matInput
+            [(ngModel)]="fieldSearch"
+            [placeholder]="'Search fields' | translate"
+            [attr.aria-label]="'Search fields' | translate"
+            data-cy="data-explorer-field-search"
+        />
+        @if (fieldSearch) {
+            <button
+                mat-icon-button
+                matSuffix
+                type="button"
+                [attr.aria-label]="'Clear search' | translate"
+                (click)="fieldSearch = ''"
+            >
+                <mat-icon>close</mat-icon>
+            </button>
+        }
+    </mat-form-field>
     <div
-        fxLayout="column"
+        class="flex-col"
         [class.field-scroll-panel]="!expandFields"
         data-cy="data-explorer-field-selection-panel"
     >
-        @for (field of sourceConfig.queryConfig.fields; track field) {
-            <div fxLayout="column">
+        @for (field of filteredFields; track field) {
+            <div class="flex-col">
                 <sp-field-selection
                     [field]="field"
                     [sourceConfig]="sourceConfig"
                 >
                 </sp-field-selection>
             </div>
+        } @empty {
+            <p role="status">{{ 'No matching fields' | translate }}</p>
         }
     </div>
 </sp-split-section>
