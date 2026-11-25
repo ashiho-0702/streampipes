@@ -30,6 +30,7 @@ RUN apt-get update \
         libnss3 \
         libxss1 \
         libxtst6 \
+        rsync \
         xauth \
         xvfb \
     && rm -rf /var/lib/apt/lists/*

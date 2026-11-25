@@ -19,7 +19,8 @@
 # Development Containers
 
 This setup runs third-party services in Docker Compose and provides a container
-for running StreamPipes from source with VS Code or IntelliJ IDEA.
+for running StreamPipes from source with VS Code, IntelliJ IDEA, or the helper
+scripts in `scripts/`.
 
 ## Services
 
@@ -29,7 +30,7 @@ for running StreamPipes from source with VS Code or IntelliJ IDEA.
 - One workspace container for Maven, Java and Node.js tooling
 
 Core, IIoT extensions and the UI are started from source with IDE run
-configurations or terminal commands, not as prebuilt application images.
+configurations or the helper scripts, not as prebuilt application images.
 
 ## First Start with VS Code
 
@@ -44,8 +45,24 @@ configurations or terminal commands, not as prebuilt application images.
 1. Open IntelliJ IDEA and select `Dev Containers` under `Remote Development`.
 2. Click `New Dev Container`.
 3. Select `.devcontainer/idea/devcontainer.json` as the configuration file.
+4. Select `Full StreamPipes Dev` in the run configuration selector and click
+   `Run` to start Core, IIoT extensions and the UI.
+5. Once the services are ready, open <http://localhost:8082>. Use IDEA's `Stop`
+   actions to stop the running configurations.
 
-## IDEA Troubleshooting
+The shared configurations are in `.run/StreamPipes Dev Container.run.xml` and
+require the Shell Script plugin. They build with Maven inside the container,
+then wait for Core and IIoT extensions before starting the UI. Individual
+configurations also start their required application services. Services already
+running are reused; stopping a configuration stops the services it started.
+
+These are Run configurations. Java breakpoint debugging requires a separate
+Java or remote debug configuration.
+
+The IDEA launchers synchronize source changes into a private Linux build cache
+before compiling, which avoids slow class loading from Windows bind mounts.
+
+### IDEA Troubleshooting
 
 In IntelliJ IDEA 2025.1 and earlier, the Docker plugin may report
 `client version 1.24 is too old` if your Docker Engine requires a newer API
@@ -54,6 +71,48 @@ to a release newer than 2025.2.
 
 If opening an existing Dev Container does nothing, check `idea.log` for a 404
 indicating that `/.jbdevcontainer/config/JetBrains/host-config.json` is missing.
+IDEA generates that file per connection and it contains the local backend path
+and build number, so it is neither committed nor shareable.
+
+If IDEA uses `/root/.m2/repository` and cannot resolve Maven dependencies already
+cached in `/home/vscode/.m2/repository`, move any existing root repository aside
+inside the container, symlink `/root/.m2/repository` to
+`/home/vscode/.m2/repository`, and reload the Maven project. This workaround may
+need to be reapplied after recreating the container.
+
+## Start and Stop with Helper Scripts
+
+Start the Dev Container using one of the IDEs above. Run the commands on the
+host from the repository root. The UI is available at <http://localhost:8082>
+by default once the services are ready.
+
+### Windows
+
+1. Run [start-streampipes-build.cmd](scripts/start-streampipes-build.cmd)
+   for the first run or after backend code changes. To reuse the existing Maven
+   build outputs, run [start-streampipes.cmd](scripts/start-streampipes.cmd).
+2. Run [stop-streampipes.cmd](scripts/stop-streampipes.cmd) to stop Core, IIoT
+   extensions and the UI.
+
+### macOS and Linux
+
+Use PowerShell 7 (`pwsh`) on the host to run the same helper scripts.
+
+1. Run `pwsh -NoProfile -File .devcontainer/scripts/start-streampipes.ps1` for
+   the first run or after backend code changes. Add `-SkipBuild` to reuse the
+   existing Maven build outputs.
+2. Run `pwsh -NoProfile -File .devcontainer/scripts/stop-streampipes.ps1` to stop
+   the application services.
+
+### First Installation
+
+On a fresh database, the scripts give Core a 120-second delay before initial setup. To
+override the delay, set `SP_INITIAL_WAIT_BEFORE_INSTALLATION_MS` in the workspace
+container's environment.
+
+If the startup log reports that initial setup found no extensions, or if pipeline
+elements are missing after startup, wait until IIoT extensions is ready and use
+`Install pipeline elements` under `Configuration` in the UI.
 
 ## Services and Ports
 

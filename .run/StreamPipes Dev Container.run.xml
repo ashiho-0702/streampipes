@@ -1,0 +1,54 @@
+<!--
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+     http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+-->
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Dev Container Core" type="ShConfigurationType">
+    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/.devcontainer/scripts/idea-run.sh" />
+    <option name="SCRIPT_OPTIONS" value="core" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INTERPRETER_PATH" value="/bin/bash" />
+    <option name="EXECUTE_IN_TERMINAL" value="false" />
+    <option name="EXECUTE_SCRIPT_FILE" value="true" />
+    <method v="2" />
+  </configuration>
+  <configuration default="false" name="Dev Container IIoT Extensions" type="ShConfigurationType">
+    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/.devcontainer/scripts/idea-run.sh" />
+    <option name="SCRIPT_OPTIONS" value="extensions" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INTERPRETER_PATH" value="/bin/bash" />
+    <option name="EXECUTE_IN_TERMINAL" value="false" />
+    <option name="EXECUTE_SCRIPT_FILE" value="true" />
+    <method v="2" />
+  </configuration>
+  <configuration default="false" name="Dev Container UI" type="ShConfigurationType">
+    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/.devcontainer/scripts/idea-run.sh" />
+    <option name="SCRIPT_OPTIONS" value="ui" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INTERPRETER_PATH" value="/bin/bash" />
+    <option name="EXECUTE_IN_TERMINAL" value="false" />
+    <option name="EXECUTE_SCRIPT_FILE" value="true" />
+    <method v="2" />
+  </configuration>
+  <configuration default="false" name="Full StreamPipes Dev" type="ShConfigurationType">
+    <option name="SCRIPT_PATH" value="$PROJECT_DIR$/.devcontainer/scripts/idea-run.sh" />
+    <option name="SCRIPT_OPTIONS" value="all" />
+    <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+    <option name="INTERPRETER_PATH" value="/bin/bash" />
+    <option name="EXECUTE_IN_TERMINAL" value="false" />
+    <option name="EXECUTE_SCRIPT_FILE" value="true" />
+    <method v="2" />
+  </configuration>
+</component>
